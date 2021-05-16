@@ -3,30 +3,26 @@ package main
 import (
 	"log"
 
-	"github.com/MarceloZardoBR/go-api-frame/server"
-	"github.com/MarceloZardoBR/go-api-frame/server/router"
-	"github.com/MarceloZardoBR/go-api-frame/server/router/homeroute"
+	"github.com/MarceloZardoBR/go-api-frame/router"
+
 	"github.com/gofiber/fiber/v2"
+
+	"github.com/MarceloZardoBR/go-api-frame/database"
+	"github.com/MarceloZardoBR/go-api-frame/server"
 )
 
 func main() {
 
-	server := initializeServer()
-	server.Start()
-}
-
-// Initalize Echo, services and db configs
-func initializeServer() *server.Server {
+	psqlconn := database.CreateConfiguration("localhost", 5432, "postgres", "", "db_teste")
+	_, err := database.StartDB(psqlconn)
+	if err != nil {
+		log.Println(err)
+	}
 
 	fiber := fiber.New()
+	server := server.NewServer(fiber)
 
-	homeController := homeroute.NewController(fiber)
+	router.AddRouter(fiber)
 
-	router.RegisterRoutes(fiber, homeController)
-
-	server := server.Instance(fiber)
-
-	log.Printf("Server running at port %d \n", 3000)
-
-	return server
+	server.StartServer("5000")
 }

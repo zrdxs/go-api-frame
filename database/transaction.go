@@ -1,18 +1,16 @@
-package datamysql
+package database
 
-import (
-	"database/sql"
-)
+import "database/sql"
 
-// Transaction struct model
+// Transaction holds tx structs
 type Transaction struct {
 	tx       *sql.Tx
-	commit   bool
 	rollback bool
+	commit   bool
 }
 
-// NewTransaction return a new instance for transaction
-func NewTransaction(tx *sql.Tx) *Transaction {
+// New return new tx instance
+func New(tx *sql.Tx) *Transaction {
 	instance := &Transaction{
 		tx: tx,
 	}
@@ -20,6 +18,7 @@ func NewTransaction(tx *sql.Tx) *Transaction {
 	return instance
 }
 
+// Commit the sql tx
 func (t *Transaction) Commit() error {
 	err := t.tx.Commit()
 	if err != nil {
@@ -31,8 +30,9 @@ func (t *Transaction) Commit() error {
 	return nil
 }
 
+// Rollback aborts the sql tx
 func (t *Transaction) Rollback() error {
-	if t != nil && !t.commit && !t.rollback {
+	if !t.commit && !t.rollback {
 		err := t.tx.Rollback()
 		if err != nil {
 			return err

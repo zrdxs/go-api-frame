@@ -2,42 +2,32 @@ package server
 
 import (
 	"fmt"
-	"sync"
+	"log"
 
 	"github.com/gofiber/fiber/v2"
 )
 
-const (
-	port = 3000
-)
-
-var (
-	once     sync.Once
-	instance *Server
-)
-
 // Server holds server struct
 type Server struct {
-	Fiber *fiber.App
+	fiber *fiber.App
 }
 
-// Instance start a new Server instance
-func Instance(fiber *fiber.App) *Server {
-	once.Do(func() {
-		instance = &Server{
-			Fiber: fiber,
-		}
-	})
-	return instance
+// NewServer returns new server instance
+func NewServer(fiber *fiber.App) *Server {
+	return &Server{
+		fiber: fiber,
+	}
 }
 
-// Start server at defined port
-func (s *Server) Start() error {
+// StartServer configure fiber HTTP
+func (s *Server) StartServer(port string) error {
 
-	err := s.Fiber.Listen(fmt.Sprintf(":%d", port))
+	err := s.fiber.Listen(fmt.Sprintf(":%s", port))
 	if err != nil {
 		return err
 	}
+
+	log.Println("Starting Server at port: %d", port)
 
 	return nil
 }
