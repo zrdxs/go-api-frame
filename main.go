@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	"github.com/MarceloZardoBR/go-api-frame/domain/service"
 	"github.com/MarceloZardoBR/go-api-frame/router"
 
 	"github.com/gofiber/fiber/v2"
@@ -13,11 +14,12 @@ import (
 
 func main() {
 
-	psqlconn := database.CreateConfiguration("localhost", 5432, "postgres", "", "db_teste")
-	_, err := database.StartDB(psqlconn)
+	db, err := database.Instance()
 	if err != nil {
 		log.Println(err)
 	}
+
+	_ = service.NewServices(db)
 
 	fiber := fiber.New()
 	server := server.NewServer(fiber)

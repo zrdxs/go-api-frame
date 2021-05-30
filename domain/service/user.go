@@ -6,10 +6,13 @@ import (
 )
 
 type UserService struct {
+	svc *Service
 }
 
-func NewService() interfaces.UserService {
-	return &UserService{}
+func NewUserService(svc *Service) interfaces.UserService {
+	return &UserService{
+		svc: svc,
+	}
 }
 
 func (s *UserService) GetAll() []entity.User {
