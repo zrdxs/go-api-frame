@@ -1,7 +1,9 @@
 package entity
 
+// User holds user struct
 type User struct {
-	Name  string
-	Age   int64
-	Email string
+	UserID int64  `json:"user_id"`
+	Name   string `json:"name"`
+	Age    int64  `json:"age"`
+	Email  string `json:"email"`
 }

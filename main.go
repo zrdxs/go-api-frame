@@ -19,7 +19,14 @@ func main() {
 		log.Println(err)
 	}
 
-	_ = service.NewServices(db)
+	svc := service.NewServices(db)
+
+	userService := service.NewUserService(svc)
+
+	_, err = userService.GetAll()
+	if err != nil {
+		log.Println(err)
+	}
 
 	fiber := fiber.New()
 	server := server.NewServer(fiber)

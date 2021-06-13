@@ -9,5 +9,5 @@ type Repos interface {
 }
 
 type UserRepo interface {
-	GetAll() []entity.User
+	GetAll() ([]entity.User, error)
 }

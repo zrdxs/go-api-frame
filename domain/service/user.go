@@ -1,6 +1,9 @@
 package service
 
 import (
+	"encoding/json"
+	"fmt"
+
 	"github.com/MarceloZardoBR/go-api-frame/domain/entity"
 	"github.com/MarceloZardoBR/go-api-frame/domain/interfaces"
 )
@@ -15,7 +18,15 @@ func NewUserService(svc *Service) interfaces.UserService {
 	}
 }
 
-func (s *UserService) GetAll() []entity.User {
+func (s *UserService) GetAll() ([]entity.User, error) {
 
-	return nil
+	user, err := s.svc.db.UserRepo().GetAll()
+	if err != nil {
+		return user, err
+	}
+
+	json2, _ := json.MarshalIndent(user, "", " ")
+	fmt.Println(string(json2))
+
+	return user, nil
 }

@@ -5,5 +5,5 @@ import (
 )
 
 type UserService interface {
-	GetAll() []entity.User
+	GetAll() ([]entity.User, error)
 }

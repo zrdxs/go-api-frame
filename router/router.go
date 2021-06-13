@@ -11,4 +11,7 @@ func AddRouter(app *fiber.App) {
 	rootGroup.Get("/health/", func(ctx *fiber.Ctx) error {
 		return ctx.JSON("OK")
 	})
+
+	_ = rootGroup.Group("main")
+
 }

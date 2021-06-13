@@ -22,6 +22,14 @@ type Database struct {
 	userRepo *userRepo
 }
 
+type Row interface {
+	Scan(...interface{}) error
+}
+
+type RowScanner interface {
+	ScanRow(Row, interface{}) error
+}
+
 func Instance() (interfaces.Data, error) {
 
 	database := &Database{}
@@ -43,10 +51,10 @@ func createConfiguration() string {
 	host := "localhost"
 	port := 5432
 	user := "postgres"
-	password := ""
+	password := "postgres"
 	dbname := "db_teste"
 
-	psqlconn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
+	psqlconn := fmt.Sprintf(" port=%d host=%s user=%s password=%s dbname=%s sslmode=disable", port, host, user, password, dbname)
 
 	return psqlconn
 }
