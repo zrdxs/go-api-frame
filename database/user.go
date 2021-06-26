@@ -2,6 +2,8 @@ package database
 
 import (
 	"database/sql"
+	"log"
+	"reflect"
 
 	"github.com/MarceloZardoBR/go-api-frame/domain/entity"
 )
@@ -24,7 +26,7 @@ func (u *userRepo) GetAll() ([]entity.User, error) {
 	for rows.Next() {
 		u := entity.User{}
 
-		err = ScanRow(rows, &u)
+		err := ScanEntity(rows, &u)
 		if err != nil {
 			return users, err
 		}
@@ -35,12 +37,23 @@ func (u *userRepo) GetAll() ([]entity.User, error) {
 	return users, nil
 }
 
-func ScanRow(r Row, user *entity.User) (err error) {
-	err = r.Scan(&user.UserID,
-		&user.Name,
-		&user.Age,
-		&user.Email,
-	)
+func ScanEntity(row Row, modelEntity interface{}) error {
+
+	typeOf := reflect.ValueOf(modelEntity).Elem()
+	kindOf := typeOf.Kind()
+	fieldsNumber := typeOf.NumField()
+
+	structFields := make([]interface{}, fieldsNumber)
+
+	if kindOf != reflect.Struct {
+		log.Fatal("unexpected type")
+	}
+
+	for i := 0; i < fieldsNumber; i++ {
+		structFields[i] = typeOf.Field(i).Addr().Interface()
+	}
+
+	err := row.Scan(structFields...)
 	if err != nil {
 		return err
 	}
