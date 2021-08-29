@@ -1,10 +1,11 @@
 package router
 
 import (
+	"github.com/MarceloZardoBR/go-api-frame/router/mainrouter/authorization"
 	"github.com/gofiber/fiber/v2"
 )
 
-func AddRouter(app *fiber.App) {
+func AddRouter(app *fiber.App, authController *authorization.Controller) {
 
 	rootGroup := app.Group("")
 
@@ -12,6 +13,7 @@ func AddRouter(app *fiber.App) {
 		return ctx.JSON("OK")
 	})
 
-	_ = rootGroup.Group("main")
+	mainGroup := rootGroup.Group("main")
 
+	mainGroup.Get("/authorization/", authController.Authorization)
 }
