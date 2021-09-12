@@ -1,25 +1,32 @@
 package authorization
 
 import (
-	"fmt"
+	"net/http"
 
 	"github.com/MarceloZardoBR/go-api-frame/infra/auth"
+	"github.com/MarceloZardoBR/go-api-frame/infra/config"
 	"github.com/gofiber/fiber/v2"
 )
 
-type Controller struct{}
+// Controller holds entity struct
+type Controller struct {
+	cfg *config.Config
+}
 
-func NewController() *Controller {
-	return &Controller{}
+// NewController return new entity instance
+func NewController(cfg *config.Config) *Controller {
+	return &Controller{
+		cfg: cfg,
+	}
 }
 
 func (c *Controller) Authorization(ctx *fiber.Ctx) error {
 	auth := auth.AuthToken{}
 
-	token, err := auth.GenerateToken()
+	authResponse, err := auth.GenerateUserTokenAndResponse(c.cfg)
 	if err != nil {
-		fmt.Println("Error: ", err)
+		return ctx.Status(http.StatusBadRequest).SendString(err.Error())
 	}
-	fmt.Println("Token: ", token)
-	return ctx.SendString(token)
+
+	return ctx.JSON(authResponse)
 }

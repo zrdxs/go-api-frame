@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/MarceloZardoBR/go-api-frame/database"
-	"github.com/MarceloZardoBR/go-api-frame/domain/service"
+	"github.com/MarceloZardoBR/go-api-frame/domain/services"
 	"github.com/MarceloZardoBR/go-api-frame/infra/config"
 	"github.com/MarceloZardoBR/go-api-frame/router"
 	"github.com/MarceloZardoBR/go-api-frame/router/mainrouter/authorization"
@@ -25,16 +25,16 @@ func main() {
 		log.Println(err)
 	}
 
-	svc := service.NewServices(db, *config)
+	svc := services.NewServices(db, config)
 
-	userService := service.NewUserService(svc)
+	userService := services.NewUserService(svc)
 
 	_, err = userService.GetAll()
 	if err != nil {
 		log.Println(err)
 	}
 
-	authController := authorization.NewController()
+	authController := authorization.NewController(config)
 
 	fiber := fiber.New()
 	server := server.NewServer(fiber)
