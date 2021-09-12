@@ -1,4 +1,4 @@
-package models
+package viewmodels
 
 type AuthResponse struct {
 	Token          string `json:"token"`
