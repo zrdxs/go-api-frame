@@ -1,11 +1,10 @@
 package middlewares
 
 import (
-	"errors"
-
 	"github.com/MarceloZardoBR/go-api-frame/infra/auth"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/pkg/errors"
 )
 
 type UserTokenKey string
@@ -14,7 +13,6 @@ var (
 	UserToken UserTokenKey = "UserToken"
 )
 
-// TODO: Error Wrap
 // Authorization middleware for JWT Token
 func Authorization() fiber.Handler {
 	return func(fiberCtx *fiber.Ctx) error {

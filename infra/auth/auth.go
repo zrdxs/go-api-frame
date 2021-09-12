@@ -2,17 +2,16 @@ package auth
 
 import (
 	"crypto/rsa"
-	"errors"
 	"net/http"
 	"strings"
 	"time"
 
 	"github.com/MarceloZardoBR/go-api-frame/infra/config"
-	"github.com/MarceloZardoBR/go-api-frame/server/models"
+	"github.com/MarceloZardoBR/go-api-frame/server/viewmodels"
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/pkg/errors"
 )
 
-// TODO: Wrapper errors
 const (
 	TokenHeader string = "Token"
 )
@@ -22,7 +21,7 @@ type AuthToken struct {
 	jwt.StandardClaims
 }
 
-func (s *AuthToken) GenerateUserTokenAndResponse(cfg *config.Config) (authResponse models.AuthResponse, err error) {
+func (s *AuthToken) GenerateUserTokenAndResponse(cfg *config.Config) (authResponse viewmodels.AuthResponse, err error) {
 
 	IssuedAt := time.Now().Unix()
 	ExpiresAt := time.Now().Add(time.Hour * time.Duration(cfg.AuthTokenExpireTime)).Unix()
@@ -34,7 +33,7 @@ func (s *AuthToken) GenerateUserTokenAndResponse(cfg *config.Config) (authRespon
 
 	token, err := s.GenerateToken(cfg, claims)
 	if err != nil {
-		return authResponse, err
+		return authResponse, errors.WithStack(err)
 	}
 
 	authResponse.Token = token
@@ -48,14 +47,14 @@ func (s *AuthToken) GenerateToken(cfg *config.Config, claims jwt.Claims) (appTok
 	var key *rsa.PrivateKey
 	key, err = jwt.ParseRSAPrivateKeyFromPEM([]byte(cfg.APIPrivateKey))
 	if err != nil {
-		return appToken, err
+		return appToken, errors.WithStack(err)
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)
 
 	appToken, err = token.SignedString(key)
 	if err != nil {
-		return appToken, err
+		return appToken, errors.WithStack(err)
 	}
 
 	return appToken, nil
