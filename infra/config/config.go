@@ -10,7 +10,8 @@ import (
 )
 
 type Config struct {
-	APIPrivateKey string `json:"api-private-key"`
+	APIPrivateKey       string `json:"api-private-key"`
+	AuthTokenExpireTime int64  `json:"auth-token-expire-time"`
 }
 
 func ReadAndLoadEnvVars() (config *Config, err error) {

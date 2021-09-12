@@ -1,4 +1,4 @@
-package service
+package services
 
 import (
 	"github.com/MarceloZardoBR/go-api-frame/domain/interfaces"
@@ -6,13 +6,13 @@ import (
 )
 
 type Service struct {
-	db     interfaces.Repos
-	config config.Config
+	db  interfaces.Repos
+	cfg *config.Config
 }
 
-func NewServices(db interfaces.Repos, config config.Config) *Service {
+func NewServices(db interfaces.Repos, cfg *config.Config) *Service {
 	return &Service{
-		db:     db,
-		config: config,
+		db:  db,
+		cfg: cfg,
 	}
 }
