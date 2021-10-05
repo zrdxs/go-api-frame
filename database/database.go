@@ -7,6 +7,8 @@ import (
 	"sync"
 
 	"github.com/MarceloZardoBR/go-api-frame/domain/interfaces"
+	"github.com/MarceloZardoBR/go-api-frame/infra/config"
+	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/lib/pq"
 )
 
@@ -30,11 +32,11 @@ type RowScanner interface {
 	ScanRow(Row, interface{}) error
 }
 
-func Instance() (interfaces.Data, error) {
+func Instance(cfg *config.Config) (interfaces.Data, error) {
 
 	database := &Database{}
 
-	db, err := StartDB()
+	db, err := StartDB(cfg)
 	if err != nil {
 		return database, err
 	}
@@ -46,25 +48,32 @@ func Instance() (interfaces.Data, error) {
 }
 
 // CreateConfiguration returns db conn string
-func createConfiguration() string {
+func createConfiguration(cfg *config.Config) (psqlconn string) {
 
-	host := "localhost"
-	port := 5432
-	user := "postgres"
-	password := "postgres"
-	dbname := "db_teste"
+	host := cfg.DBHost
+	port := cfg.DBPort
+	user := cfg.DBUser
+	password := cfg.DBPassword
+	dbname := cfg.DBName
 
-	psqlconn := fmt.Sprintf(" port=%d host=%s user=%s password=%s dbname=%s sslmode=disable", port, host, user, password, dbname)
+	switch cfg.DBService {
+	case "postgres":
+		psqlconn = fmt.Sprintf(" port=%d host=%s user=%s password=%s dbname=%s sslmode=disable", port, host, user, password, dbname)
+	case "mysql":
+		psqlconn = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", user, password, host, port, dbname)
+	default:
+		return psqlconn
+	}
 
 	return psqlconn
 }
 
 // StartDB connection
-func StartDB() (*sql.DB, error) {
+func StartDB(cfg *config.Config) (*sql.DB, error) {
 	once.Do(func() {
 		log.Println("Starting DB Connection...")
-		psqlconn := createConfiguration()
-		db, err := sql.Open("postgres", psqlconn)
+		psqlconn := createConfiguration(cfg)
+		db, err := sql.Open(cfg.DBService, psqlconn)
 		if err != nil {
 			dberr = err
 			return
