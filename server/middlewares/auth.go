@@ -33,6 +33,12 @@ func Authorization() fiber.Handler {
 			return errors.New("Invalid Token")
 		}
 
+		// TODO: improve this error
+		_, ok = token.Claims.(auth.AuthToken)
+		if !ok {
+			return errors.New("Unauthorized")
+		}
+
 		return fiberCtx.Next()
 	}
 }

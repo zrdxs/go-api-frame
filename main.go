@@ -20,7 +20,7 @@ func main() {
 		log.Println(err)
 	}
 
-	db, err := database.Instance()
+	db, err := database.Instance(config)
 	if err != nil {
 		log.Println(err)
 	}
