@@ -15,7 +15,37 @@ func RequestAPIGETWithBody(url string, timeout time.Duration, body interface{}, 
 		return bodyResponse, statusCode, err
 	}
 
-	return bodyResponse, statusCode, err
+	return bodyResponse, statusCode, nil
+}
+
+// RequestAPIPPOST make a POST request
+func RequestAPIPPOST(url string, timeout time.Duration, body interface{}, queryParams map[string]string) (bodyResponse []byte, statusCode int, err error) {
+	bodyResponse, statusCode, err = makeRequest(url, timeout, http.MethodPost, body, queryParams)
+	if err != nil {
+		return bodyResponse, statusCode, err
+	}
+
+	return bodyResponse, statusCode, nil
+}
+
+// RequestAPIPPUT make a PUT request
+func RequestAPIPPUT(url string, timeout time.Duration, body interface{}, queryParams map[string]string) (bodyResponse []byte, statusCode int, err error) {
+	bodyResponse, statusCode, err = makeRequest(url, timeout, http.MethodPut, body, queryParams)
+	if err != nil {
+		return bodyResponse, statusCode, err
+	}
+
+	return bodyResponse, statusCode, nil
+}
+
+// RequestAPIPDELETE make a DELETE request
+func RequestAPIPDELETE(url string, timeout time.Duration, body interface{}, queryParams map[string]string) (bodyResponse []byte, statusCode int, err error) {
+	bodyResponse, statusCode, err = makeRequest(url, timeout, http.MethodDelete, body, queryParams)
+	if err != nil {
+		return bodyResponse, statusCode, err
+	}
+
+	return bodyResponse, statusCode, nil
 }
 
 func makeRequest(url string, timeout time.Duration, method string, body interface{}, queryParams map[string]string) (bodyResponse []byte, statusCode int, err error) {
@@ -61,5 +91,5 @@ func makeRequest(url string, timeout time.Duration, method string, body interfac
 
 	statusCode = resp.StatusCode
 
-	return bodyResponse, statusCode, err
+	return bodyResponse, statusCode, nil
 }
